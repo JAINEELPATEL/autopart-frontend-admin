@@ -24,9 +24,12 @@ api.interceptors.request.use((config) => {
   api.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.error('API Error:', error);
+      // Extract backend error message if available
+      const backendMessage = error.response?.data?.message;
+      if (backendMessage) {
+        error.message = backendMessage;
+      }
       if (error.response?.status === 401) {
-        // Token expired or invalid
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');
           window.location.href = '/auth/login';
@@ -34,7 +37,7 @@ api.interceptors.request.use((config) => {
       }
       return Promise.reject(error);
     }
-  ) 
+  ); 
 
   // Authentication API - Updated to match your backend
 export const authApi = {
