@@ -100,6 +100,7 @@ export default function SignupPage() {
     if (validationErrors[field]) {
       setValidationErrors((prev) => ({ ...prev, [field]: "" }));
     }
+    if (error) dispatch(clearError());
   };
 
   return (

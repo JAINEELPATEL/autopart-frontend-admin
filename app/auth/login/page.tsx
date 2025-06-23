@@ -23,12 +23,24 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{
+    email?: string;
+    password?: string;
+  }>({});
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        dispatch(clearError());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, dispatch]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -36,10 +48,37 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, router]);
 
+  const validateForm = () => {
+    const errors: { email?: string; password?: string } = {};
+    if (!email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Email is invalid";
+    }
+    if (!password) {
+      errors.password = "Password is required";
+    }
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (validationErrors.email)
+      setValidationErrors((prev) => ({ ...prev, email: undefined }));
+    if (error) dispatch(clearError());
+  };
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (validationErrors.password)
+      setValidationErrors((prev) => ({ ...prev, password: undefined }));
+    if (error) dispatch(clearError());
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(clearError());
-
+    if (!validateForm()) return;
     try {
       await dispatch(login({ email, password })).unwrap();
       router.push("/");
@@ -82,9 +121,14 @@ export default function LoginPage() {
                   type="email"
                   placeholder="admin@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                   required
                 />
+                {validationErrors.email && (
+                  <p className="text-sm text-red-500">
+                    {validationErrors.email}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -95,7 +139,7 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     required
                   />
                   <Button
@@ -112,6 +156,11 @@ export default function LoginPage() {
                     )}
                   </Button>
                 </div>
+                {validationErrors.password && (
+                  <p className="text-sm text-red-500">
+                    {validationErrors.password}
+                  </p>
+                )}
               </div>
 
               <Button type="submit" className="w-full" disabled={loading}>
