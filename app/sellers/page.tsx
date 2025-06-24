@@ -175,9 +175,9 @@ export default function SellersPage() {
           <SidebarTrigger className="-ml-2" />
           <h1 className="text-xl font-semibold">Sellers Management</h1>
         </div>
-        <Button>
+        {/* <Button>
           <Plus className="mr-2 h-4 w-4" /> Add Seller
-        </Button>
+        </Button> */}
       </header>
 
       <div className="p-6">

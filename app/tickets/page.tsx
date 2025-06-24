@@ -280,7 +280,7 @@ export default function TicketsPage() {
           <SidebarTrigger className="-ml-2" />
           <h1 className="text-xl font-semibold">Support Tickets</h1>
         </div>
-        <Button>Assign Tickets</Button>
+        {/* <Button>Assign Tickets</Button> */}
       </header>
 
       <div className="p-6">
