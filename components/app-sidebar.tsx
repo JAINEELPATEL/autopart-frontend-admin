@@ -16,6 +16,7 @@ import {
   Sun,
   Moon,
   Loader2,
+  Blocks
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -80,6 +81,11 @@ const menuItems = [
     title: "Messages",
     url: "/messages",
     icon: MessageSquare,
+  },
+  {
+    title: "Blogs",
+    url: "/blogs",
+    icon: Blocks,
   },
   {
     title: "Support Tickets",
